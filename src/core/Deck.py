@@ -22,14 +22,14 @@ class Deck(object):
         Constructs a deck of cards.
         '''
         self._card_colors = ['red', 'green', 'yellow', 'blue']
-        self._special_cards = ['skip', 'draw', 'reverse']
+        self._special_cards = ['skip', 'draw 2', 'reverse']
 
         self._cards = []
         for color in self._card_colors:
             for x in range(2): #2 normal cards of every color
                 for i in range(1,10): #creating the normal cards
                     self._cards.append(Card(color,i))
-                for prop in ['skip', 'draw 2','reverse']:
+                for prop in self._special_cards:
                     self._cards.append(Card(color, prop))
                 
     def drawCard(self):
