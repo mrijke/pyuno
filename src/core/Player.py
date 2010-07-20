@@ -33,5 +33,9 @@ class Player(object):
         card = self._deck.drawCard()
         self._hand.addCard(card)
         
+    def drawTwoCards(self):
+        self.drawCard()
+        self.drawCard()
+        
     def removeFromHand(self, card):
         self._hand.removeCard(card)

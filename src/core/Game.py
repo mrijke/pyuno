@@ -6,6 +6,9 @@ Created on Apr 23, 2010
 from Deck import Deck
 from Player import Player
 
+class InvalidMoveException(Exception):
+    pass
+
 class Game(object):
     '''
     This represents a game of UNO. It keeps track of a list of the players currently involved in the game.
@@ -36,16 +39,31 @@ class Game(object):
             #only the colors need to match now
             if card.getColor() == self._currentCard.getColor(): 
                 return True
-            return False
+            raise InvalidMoveException
         if card.getColor() == self._currentCard.getColor():
             return True
         else:
             if card.getData() == self._currentCard.getData():
                 return True
-            return False
+            raise InvalidMoveException
+        
+    def applySpecial(self,card):
+        ability = card.getData()
+        if ability == 'skip':
+            self._currentPlayer+=1
+            if self._currentPlayer >= len(self._playerList):
+                self._currentPlayer = 0
+        elif ability == 'reverse':
+            self._playerList = self._playerList[::-1] #reverse the list
+        elif ability == 'draw 2':
+            try:
+                self._playerList[self._currentPlayer+1].drawTwoCards()
+            except:
+                self._playerList[0].drawTwoCards()
         
     def doMove(self, player, card):
         if self.testMove(card):
+            if card.isSpecial(): self.applySpecial(card)
             player.removeFromHand(card)
             self._currentCard = card
             return True

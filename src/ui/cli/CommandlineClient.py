@@ -3,7 +3,8 @@ Created on Jul 19, 2010
 
 @author: rupert
 '''
-from core.Game import Game
+import sys
+from core.Game import Game, InvalidMoveException
 
 def start():
     print "Welcome to the superawesome pyUNO gaem."
@@ -21,7 +22,10 @@ def start():
         notDone = True
         drew = False
         while notDone:
-            selectedcard = int(raw_input("Pick a card number, or 0 to draw a new card/pass. > "))
+            try:
+                selectedcard = int(raw_input("Pick a card number, or 0 to draw a new card/pass. > "))
+            except KeyboardInterrupt:
+                sys.exit(1)                
             if selectedcard == 0 and not drew:
                 current.drawCard()
                 print "%s draws a card." % current.getName()
@@ -38,7 +42,10 @@ def start():
                 break
                 
             if selectedcard <= len(cards):
-                if g.doMove(current, cards[selectedcard-1]):
-                    notDone = False
-                    break
-                print "Not a valid move."
+                try:
+                    g.doMove(current, cards[selectedcard-1])
+                except InvalidMoveException:
+                    print "Not a valid move."
+                    continue
+                notDone = False
+                
