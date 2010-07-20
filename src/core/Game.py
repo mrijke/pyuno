@@ -18,7 +18,6 @@ class Game(object):
         self._playerList = []
         self._deck = Deck()
         self._deck.shuffle()
-        self._game_finished = False
         self._currentPlayer = 0
         self._currentCard = self._deck.drawCard()
     
@@ -32,20 +31,21 @@ class Game(object):
         return self._currentCard
     
     def isFinished(self):
-        return self._game_finished
+        for player in self._playerList:
+            if len(player.getCurrentHand()) == 0:
+                return True
+        return False
     
     def testMove(self, card):
-        if card.isSpecial():
-            #only the colors need to match now
-            if card.getColor() == self._currentCard.getColor(): 
-                return True
-            raise InvalidMoveException
         if card.getColor() == self._currentCard.getColor():
             return True
         else:
             if card.getData() == self._currentCard.getData():
                 return True
             raise InvalidMoveException
+        
+    def hasUno(self, player):
+        return len(player.getCurrentHand()) == 1
         
     def applySpecial(self,card):
         ability = card.getData()
@@ -62,18 +62,27 @@ class Game(object):
                 self._playerList[0].drawTwoCards()
         
     def doMove(self, player, card):
-        if self.testMove(card):
-            if card.isSpecial(): self.applySpecial(card)
-            player.removeFromHand(card)
-            self._currentCard = card
-            return True
-        return False
-    
-    def nextPlayer(self):
-        res = self._playerList[self._currentPlayer]
+        self.testMove(card)
+        if card.isSpecial(): self.applySpecial(card)
+        player.removeFromHand(card)
+        self._currentCard = card
         self._currentPlayer += 1
         if self._currentPlayer >= len(self._playerList):
-            self._currentPlayer = 0 
+            self._currentPlayer = 0        
+    
+    def currentPlayer(self):
+        res = self._playerList[self._currentPlayer] 
         return res
-                
+    
+    def getNextPlayerName(self):
+        try:
+            return self._playerList[self._currentPlayer+1].getName()
+        except IndexError:
+            return self._playerList[self._currentPlayer].getName()
+        
+    def playerPasses(self):
+        self._currentPlayer += 1
+        if self._currentPlayer >= len(self._playerList):
+            self._currentPlayer = 0
+     
         

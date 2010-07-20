@@ -12,7 +12,7 @@ def start():
     g.addPlayerToGame("Sjaak", None)
     g.addPlayerToGame("Kees", None)
     while not g.isFinished():
-        current = g.nextPlayer()
+        current = g.currentPlayer()
         cards = current.getCurrentHand()
         print "%s turn. Your hand:" % current.getName()
         for card in cards:
@@ -23,10 +23,11 @@ def start():
         drew = False
         while notDone:
             try:
-                selectedcard = int(raw_input("Pick a card number, or 0 to draw a new card/pass. > "))
+                selectedcardnumber = int(raw_input("Pick a card number, or 0 to draw a new card/pass. > "))
             except KeyboardInterrupt:
                 sys.exit(1)                
-            if selectedcard == 0 and not drew:
+            
+            if selectedcardnumber == 0 and not drew:
                 current.drawCard()
                 print "%s draws a card." % current.getName()
                 print 'Your hand:'
@@ -36,16 +37,28 @@ def start():
                 print 'Current card: ' + str(g.getCurrentCard())
                 drew = True
                 continue
-            if selectedcard == 0 and drew:
+            if selectedcardnumber == 0 and drew:
                 print "%s passes." % current.getName()
+                g.playerPasses()
                 notDone = False
                 break
-                
-            if selectedcard <= len(cards):
+        
+            if selectedcardnumber <= len(cards):
                 try:
-                    g.doMove(current, cards[selectedcard-1])
+                    selectedcard = cards[selectedcardnumber-1]
+                    g.doMove(current, selectedcard)
                 except InvalidMoveException:
                     print "Not a valid move."
                     continue
+                if selectedcard.isSpecial():
+                    if selectedcard.getData() == "draw 2":
+                        print '%s draws two cards' % g.getNextPlayerName()
+                    elif selectedcard.getData() == "skip":
+                        print "%s skips a turn" % g.getNextPlayerName()
+                    elif selectedcard.getData() == "reverse":
+                        print "Play order is reversed."
+                if g.hasUno(current):
+                    print "%s has UNO! Beware!" % current.getName()
                 notDone = False
+    print "%s has won this game of UNO! :)" % current.getName()
                 
