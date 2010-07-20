@@ -26,11 +26,11 @@ class Deck(object):
 
         self._cards = []
         for color in self._card_colors:
-            for x in range(1): #2 normal cards of every color
+            for x in range(2): #2 normal cards of every color
                 for i in range(1,10): #creating the normal cards
                     self._cards.append(Card(color,i))
-            for prop in ['skip', 'draw 2','reverse']:
-                self._cards.append(Card(color, prop))
+                for prop in ['skip', 'draw 2','reverse']:
+                    self._cards.append(Card(color, prop))
                 
     def drawCard(self):
         ''' Draws the top card '''
@@ -56,7 +56,4 @@ class Deck(object):
     
 if __name__ == "__main__":
     dek = Deck()
-    dek.printDeck()
-    print '-'*50
-    dek.shuffle()
-    dek.printDeck()
+    print len(dek._cards)

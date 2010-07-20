@@ -11,6 +11,8 @@ def start():
     g = Game()
     g.addPlayerToGame("Sjaak", None)
     g.addPlayerToGame("Kees", None)
+    g.addPlayerToGame("Rupert", None)
+    g.addPlayerToGame("Ruben", None)
     while not g.isFinished():
         current = g.currentPlayer()
         cards = current.getCurrentHand()
@@ -52,7 +54,7 @@ def start():
                     continue
                 if selectedcard.isSpecial():
                     if selectedcard.getData() == "draw 2":
-                        print '%s draws two cards' % g.getNextPlayerName()
+                        print '%s draws two cards and skips his turn.' % g.getNextPlayerName()
                     elif selectedcard.getData() == "skip":
                         print "%s skips a turn" % g.getNextPlayerName()
                     elif selectedcard.getData() == "reverse":

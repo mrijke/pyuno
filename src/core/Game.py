@@ -53,30 +53,39 @@ class Game(object):
             self._currentPlayer+=1
             if self._currentPlayer >= len(self._playerList):
                 self._currentPlayer = 0
+            return True
         elif ability == 'reverse':
             self._playerList = self._playerList[::-1] #reverse the list
+            self._currentPlayer = abs(self._currentPlayer-len(self._playerList)) #fix order
+            if self._currentPlayer > len(self._playerList)-1:
+                self._currentPlayer = 0
+            return False
         elif ability == 'draw 2':
             try:
                 self._playerList[self._currentPlayer+1].drawTwoCards()
+                self._currentPlayer+=1
             except:
                 self._playerList[0].drawTwoCards()
+                self._currentPlayer = 0
+            return True
         
     def doMove(self, player, card):
         self.testMove(card)
-        if card.isSpecial(): self.applySpecial(card)
+        nextPlayer = True
+        if card.isSpecial(): nextPlayer = self.applySpecial(card)
         player.removeFromHand(card)
         self._currentCard = card
-        self._currentPlayer += 1
-        if self._currentPlayer >= len(self._playerList):
-            self._currentPlayer = 0        
-    
+        if nextPlayer:
+            self._currentPlayer += 1
+            if self._currentPlayer >= len(self._playerList):
+                self._currentPlayer = 0        
+        
     def currentPlayer(self):
-        res = self._playerList[self._currentPlayer] 
-        return res
+        return self._playerList[self._currentPlayer] 
     
     def getNextPlayerName(self):
         try:
-            return self._playerList[self._currentPlayer+1].getName()
+            return self._playerList[self._currentPlayer-1].getName()
         except IndexError:
             return self._playerList[self._currentPlayer].getName()
         
