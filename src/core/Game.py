@@ -5,6 +5,7 @@ Created on Apr 23, 2010
 '''
 from Deck import Deck
 from Player import Player
+from AIPlayer import AIPlayer
 
 class InvalidMoveException(Exception):
     pass
@@ -24,8 +25,11 @@ class Game(object):
     def getDeck(self):
         return self._deck
     
-    def addPlayerToGame(self, name, AI):
-        self._playerList.append(Player(name, self._deck, AI))
+    def addPlayerToGame(self, name):
+        self._playerList.append(Player(name, self._deck))
+        
+    def addAIPlayerToGame(self, name):
+        self._playerList.append(AIPlayer(name, self._deck))
     
     def getCurrentCard(self):
         return self._currentCard

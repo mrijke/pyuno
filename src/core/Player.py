@@ -11,12 +11,11 @@ class Player(object):
     Can be human, or can be controlled by an AI.
     '''
     
-    def __init__(self, name, deck, AI=None):
+    def __init__(self, name, deck):
         '''
         Constructs a new Player
         '''
         self._name = name
-        self._AI = AI
         self._hand = Hand()
         self._deck = deck
         initcards = self._deck.draw7Cards()
@@ -25,6 +24,20 @@ class Player(object):
             
     def getCurrentHand(self):
         return self._hand.getCards()
+    
+    def testMove(self, current, card):
+        if card.getColor() == current.getColor():
+            return True
+        else:
+            if card.getData() == current.getData():
+                return True
+            return False
+    
+    def getPlayableCards(self, current):
+        res = []
+        for card in self._hand.getCards():
+            if self.testMove(current, card): res.append(card)
+        return res
     
     def getName(self):
         return self._name
