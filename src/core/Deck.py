@@ -33,16 +33,18 @@ class Deck(object):
                     self._cards.append(Card(color, prop))
                 
     def drawCard(self):
-        ''' Draws the top card '''
+        ''' Returns (draws) the top card '''
         return self._cards.pop(0)
     
     def draw7Cards(self):
+        ''' Return (draw) 7 cards. Used for the initial cards when starting a new game. '''
         res = []
         for x in range(7):
             res.append(self.drawCard())            
         return res
     
     def shuffle(self):
+        ''' Shuffle the deck. A list is returned filled with all the cards from the deck randomly picked. '''
         newdeck =[]
         for i in range(0,len(self._cards)):
             x = randint(0,len(self._cards)-1)
@@ -51,6 +53,7 @@ class Deck(object):
         self._cards = newdeck
         
     def printDeck(self):
+        ''' Print the deck using the string representation of the cards '''
         for card in self._cards:
             print card    
     

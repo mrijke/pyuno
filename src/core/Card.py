@@ -7,7 +7,7 @@ Created on Apr 15, 2010
 class Card(object):
     '''
     Represents a single UNO card.
-    Properties include: color, number or special ability.
+    Properties include: color and card data (number or special ability).
     '''
 
     def __init__(self, color, data):
@@ -18,13 +18,17 @@ class Card(object):
         self._data = data
     
     def getColor(self):
+        ''' Returns the color of the card '''
         return self._color
     
     def getData(self):
+        ''' Returns the data of the card (number or special ability) '''
         return self._data
     
     def isSpecial(self):
+        ''' Returns true if this card is special (i.e. the self._data attribute is a string) '''
         return type(self._data) == type("")
                 
     def __str__(self):
-        return self._color + " " + str(self._data)
+        ''' Returns a string representation of the card displaying the color and the data '''
+        return "%s %s" % (self._color, str(self._data))

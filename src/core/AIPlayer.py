@@ -10,15 +10,24 @@ class NoMoveFoundException(Exception):
 
 class AIPlayer(Player):
     '''
-    classdocs
+    This class represents a simple AI opponent.
+    The strategy is very basic; the order of cards the opponent plays is:
+    *    Same color, action cards
+    *    Same color, normal cards
+    *    Other color, action cards
+    *    Other color, normal card
+    When the AI is unable to find a move, a NoMoveFoundException is raised.
+    The Client should catch this and draw another card using the Player.drawCard() method.
+    Then the determineMove() method can be called again to see if a move is possible.
+    When there is again no move possible, the Client should pass.
     '''
     def __init__(self, name, deck):
-        '''
-        Constructor
-        '''
+        ''' Construct an AIPlayer (only calls the super.__init__() '''
         Player.__init__(self, name, deck)
         
     def determineMove(self, current):
+        ''' Determine the "best" move to play. 
+        Raises a NoMoveFoundException when no valid move can be determined. '''
         cards = self.getPlayableCards(current)
         samecolor = []
         samecolor_special = []
