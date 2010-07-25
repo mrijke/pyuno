@@ -26,8 +26,10 @@ class AIPlayer(Player):
         Player.__init__(self, name, deck)
         
     def determineMove(self, current):
-        ''' Determine the "best" move to play. 
-        Raises a NoMoveFoundException when no valid move can be determined. '''
+        ''' 
+        Determine the "best" move to play. 
+        Raises a NoMoveFoundException when no valid move can be determined.
+        '''
         cards = self.getPlayableCards(current)
         samecolor = []
         samecolor_special = []
@@ -37,7 +39,7 @@ class AIPlayer(Player):
             if card.getColor() == current.getColor(): 
                 samecolor.append(card)
                 if card.isSpecial(): samecolor_special.append(card)
-            else:
+            elif card.getData() == current.getData():
                 othercolor.append(card)
                 if card.isSpecial(): othercolor_special.append(card)
         if len(samecolor_special) > 0:

@@ -69,7 +69,8 @@ class Game(object):
             return True
         elif ability == 'reverse':
             self._playerList = self._playerList[::-1] #reverse the list
-            self._currentPlayer = abs(self._currentPlayer-len(self._playerList)) #fix order
+            if len(self._playerList) > 2: 
+                self._currentPlayer = abs(self._currentPlayer-len(self._playerList)) #fix order
             if self._currentPlayer > len(self._playerList)-1:
                 self._currentPlayer = 0
             return False

@@ -3,15 +3,19 @@ Created on Jul 19, 2010
 
 @author: rupert
 '''
-import sys
+import sys, time
 from core.Game import Game, InvalidMoveException
 from core.AIPlayer import AIPlayer, NoMoveFoundException
 
 def start():
     print "Welcome to the superawesome pyUNO gaem."
     g = Game()
-    g.addPlayerToGame("Sjaak")
+    g.addAIPlayerToGame("Sjaak")
     g.addAIPlayerToGame("Kees")
+    g.addAIPlayerToGame("Rupert")
+    g.addAIPlayerToGame("Ruben1")
+    g.addAIPlayerToGame("Ruben2")
+    g.addAIPlayerToGame("Ruben3")
     while not g.isFinished():
         current = g.currentPlayer()
         cards = current.getCurrentHand()
@@ -21,9 +25,9 @@ def start():
                 print '%s |' % card,
             print
             print 'Current card: ' + str(g.getCurrentCard())
-        notDone = True
-        drew = False
         if not isinstance(current, AIPlayer): 
+            notDone = True
+            drew = False
             while notDone:
                 try:
                     selectedcardnumber = int(raw_input("Pick a card number, or 0 to draw a new card/pass. > "))
@@ -53,27 +57,34 @@ def start():
                     except InvalidMoveException:
                         print "Not a valid move."
                         continue
-                    if selectedcard.isSpecial():
-                        if selectedcard.getData() == "draw 2":
-                            print '%s draws two cards and skips his turn.' % g.getNextPlayerName()
-                        elif selectedcard.getData() == "skip":
-                            print "%s skips a turn" % g.getNextPlayerName()
-                        elif selectedcard.getData() == "reverse":
-                            print "Play order is reversed."
-                    if g.hasUno(current):
-                        print "%s has UNO! Beware!" % current.getName()
                     notDone = False
         else: #AI Player
+            print "Current card %s" % g.getCurrentCard()
+            print "AI player %s is thinking..." % current.getName()
+            time.sleep(1)
             try:
-                card = current.determineMove(g.getCurrentCard())
+                selectedcard = current.determineMove(g.getCurrentCard())
             except NoMoveFoundException:
+                print "AI draws a card."
                 current.drawCard()
                 try:
-                    card = current.determineMove(g.getCurrentCard())
+                    selectedcard = current.determineMove(g.getCurrentCard())
                 except NoMoveFoundException:
+                    print "AI passes"
                     g.playerPasses()
-            g.doMove(current, card)
-            print "AI player %s played %s" % (current.getName(), str(card))
-                    
+                    continue
+            g.doMove(current, selectedcard)
+            print "AI player %s played %s" % (current.getName(), str(selectedcard))
+        
+        if selectedcard.isSpecial():
+            if selectedcard.getData() == "draw 2":
+                print '%s draws two cards and skips his turn.' % g.getNextPlayerName()
+            elif selectedcard.getData() == "skip":
+                print "%s skips a turn" % g.getNextPlayerName()
+            elif selectedcard.getData() == "reverse":
+                print "Play order is reversed."
+        if g.hasUno(current):
+            print "%s has UNO! Beware!" % current.getName()
+                                    
     print "%s has won this game of UNO! :)" % current.getName()
                 
