@@ -1,0 +1,3 @@
+* AI needs to use the wild* cards in a smart way
+* CommandLineClient should accept entries like 'y1' for card yellow 1
+* Fix exceptions caused by incorrect input
