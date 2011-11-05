@@ -15,6 +15,7 @@ class Deck(object):
     Special cards include Skip, Draw 2, Reverse.
     Each color has one of every special card.
     There are also two non color-specific cards: Wild, and Wild Draw Four.  
+    Four of each are included in the deck.
     '''
    
     def __init__(self):
@@ -23,14 +24,19 @@ class Deck(object):
         '''
         self._card_colors = ['red', 'green', 'yellow', 'blue']
         self._special_cards = ['skip', 'draw 2', 'reverse']
+        self._nocolor_special_cards = ['wild', 'wild draw four']
 
         self._cards = []
         for color in self._card_colors:
+            self._cards.append(Card(color,0)) #add one 0 card per color
             for x in range(2): #2 normal cards of every color
                 for i in range(1,10): #creating the normal cards
                     self._cards.append(Card(color,i))
                 for prop in self._special_cards:
                     self._cards.append(Card(color, prop))
+        for card in self._nocolor_special_cards:
+            for x in range(4):
+                self._cards.append(Card('blank', card))
                 
     def drawCard(self):
         ''' Returns (draws) the top card '''

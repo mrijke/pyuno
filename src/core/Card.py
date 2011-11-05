@@ -28,7 +28,11 @@ class Card(object):
     def isSpecial(self):
         ''' Returns true if this card is special (i.e. the self._data attribute is a string) '''
         return type(self._data) == type("")
-                
+    
+    def isWild(self):
+        ''' Returns true if this card is of type Wild (Draw Four) '''
+        return self._data == "wild" or self._data == "wild draw four"
+
     def __str__(self):
         ''' Returns a string representation of the card displaying the color and the data '''
         return "%s %s" % (self._color, str(self._data))

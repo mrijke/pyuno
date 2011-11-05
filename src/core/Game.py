@@ -4,6 +4,7 @@ Created on Apr 23, 2010
 @author: rupert
 '''
 from Deck import Deck
+from Card import Card
 from Player import Player
 from AIPlayer import AIPlayer
 
@@ -22,7 +23,12 @@ class Game(object):
         self._deck.shuffle()
         self._currentPlayer = 0
         self._currentCard = self._deck.drawCard()
-    
+        self._blankCards = {
+                'blue' : Card('blue', 'blank'),
+                'yellow' : Card('yellow', 'blank'),
+                'red'    : Card('red', 'blank'),
+                'green'  : Card('green', 'blank')}
+            
     def getDeck(self):
         ''' Returns the deck used for this game '''
         return self._deck
@@ -48,18 +54,14 @@ class Game(object):
     
     def testMove(self, card):
         ''' Test to see if the Card card is a valid move given the current card in play '''
-        if card.getColor() == self._currentCard.getColor():
-            return True
-        else:
-            if card.getData() == self._currentCard.getData():
-                return True
-            raise InvalidMoveException
+        if not self.currentPlayer().testMove(self._currentCard, card):
+                raise InvalidMoveException
         
     def hasUno(self, player):
         ''' Returns True if the Player player has UNO, that is has only one card left '''
         return len(player.getCurrentHand()) == 1
         
-    def applySpecial(self,card):
+    def applySpecial(self,card, color=None):
         ''' Applies the special ability of Card card. '''
         ability = card.getData()
         if ability == 'skip':
@@ -68,22 +70,39 @@ class Game(object):
                 self._currentPlayer = 0
             return True
         elif ability == 'reverse':
+
+#            if len(self._playerList) > 2: 
+#                self._playerList = self._playerList[::-1] #reverse the list
+#                self._currentPlayer = abs(self._currentPlayer-len(self._playerList)) #fix order
+#                return True
+#            return False
             self._playerList = self._playerList[::-1] #reverse the list
             if len(self._playerList) > 2: 
                 self._currentPlayer = abs(self._currentPlayer-len(self._playerList)) #fix order
             if self._currentPlayer > len(self._playerList)-1:
-                self._currentPlayer = 0
+                self._currentPlayer=0
             return False
         elif ability == 'draw 2':
             try:
-                self._playerList[self._currentPlayer+1].drawTwoCards()
+                self._playerList[self._currentPlayer+1].drawCard(2)
                 self._currentPlayer+=1
             except:
-                self._playerList[0].drawTwoCards()
+                self._playerList[0].drawCard(2)
                 self._currentPlayer = 0
             return True
-        
-    def doMove(self, player, card):
+        elif ability == 'wild' or ability == 'wild draw four':
+            self._currentCard = self._blankCards[color]
+            if ability == "wild draw four":
+                try:
+                    self._playerList[self._currentPlayer+1].drawCard(4)
+                    self._currentPlayer+=1
+                except:
+                    self._playerList[0].drawCard(4)
+                    self._currentPlayer=0
+            return True
+
+
+    def doMove(self, player, card, color=None):
         ''' 
         Let the Player player play the Card card.
         First, test if the move is valid. Then apply any special abilities the card may have.
@@ -92,13 +111,13 @@ class Game(object):
         '''
         self.testMove(card)
         nextPlayer = True
-        if card.isSpecial(): nextPlayer = self.applySpecial(card)
+        if card.isSpecial(): nextPlayer = self.applySpecial(card, color)
         player.removeFromHand(card)
-        self._currentCard = card
+        if not card.isWild(): self._currentCard = card
         if nextPlayer:
             self._currentPlayer += 1
             if self._currentPlayer >= len(self._playerList):
-                self._currentPlayer = 0        
+                self._currentPlayer=0        
         
     def currentPlayer(self):
         ''' Returns the Player whose turn it is '''
@@ -116,5 +135,3 @@ class Game(object):
         self._currentPlayer += 1
         if self._currentPlayer >= len(self._playerList):
             self._currentPlayer = 0
-     
-        

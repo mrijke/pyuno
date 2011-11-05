@@ -28,12 +28,21 @@ class Player(object):
     
     def testMove(self, current, card):
         ''' Test if playing card with the current card current is a valid move '''
+        if card.isWild(): 
+            #may always be played, however WD4 requires player to not have current color
+            if card.getData() == "wild draw four":
+                    if self.hasCardsOfColor(current.getColor()):
+                        return False
+            return True
         if card.getColor() == current.getColor():
             return True
-        else:
-            if card.getData() == current.getData():
+        elif card.getData() == current.getData():
+            return True
+    
+    def hasCardsOfColor(self, color):
+        for card in self._hand.getCards():
+            if card.getColor() == color:
                 return True
-            return False
     
     def getPlayableCards(self, current):
         ''' Return a list of cards that are valid moves'''
@@ -46,15 +55,11 @@ class Player(object):
         ''' Returns name of player '''
         return self._name
     
-    def drawCard(self):
+    def drawCard(self, number=1):
         ''' Draw a card and add it to the player's hand '''
-        card = self._deck.drawCard()
-        self._hand.addCard(card)
-        
-    def drawTwoCards(self):
-        ''' Call drawCard() twice to draw two cards '''
-        self.drawCard()
-        self.drawCard()
+        for x in range(number):
+            card = self._deck.drawCard()
+            self._hand.addCard(card)
         
     def removeFromHand(self, card):
         ''' Remove given card from player's hand '''
