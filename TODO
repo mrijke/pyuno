@@ -1,5 +1,5 @@
-* AI needs to use the wild* cards in a smart way
-* Figure out what should happen when the deck is empty
+* All the used cards should be put in a discard pile, when the main deck is empty
+  this pile should be shuffled and used again.
 * Figure out what to do when an action card is dealt as the first card
   (officially it should apply the action)
 
