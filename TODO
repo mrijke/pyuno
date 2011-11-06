@@ -2,3 +2,7 @@
 * Figure out what should happen when the deck is empty
 * Figure out what to do when an action card is dealt as the first card
   (officially it should apply the action)
+
+AI Improvements:
+* When changing color using a card with the same number/action, choose the color
+  with the most cards.

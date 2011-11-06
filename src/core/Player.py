@@ -30,14 +30,13 @@ class Player(object):
         ''' Test if playing card with the current card current is a valid move '''
         if card.isWild(): 
             #may always be played, however WD4 requires player to not have current color
-            if card.getData() == "wild draw four":
-                    if self.hasCardsOfColor(current.getColor()):
-                        return False
+            if card.getData() == "wild draw four" and self.hasCardsOfColor(current.getColor()):
+                return False
             return True
-        if card.getColor() == current.getColor():
+        if card.getColor() == current.getColor() or card.getData() == current.getData():
             return True
-        elif card.getData() == current.getData():
-            return True
+        else:
+            return False
     
     def hasCardsOfColor(self, color):
         for card in self._hand.getCards():

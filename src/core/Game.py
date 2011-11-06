@@ -60,6 +60,13 @@ class Game(object):
     def hasUno(self, player):
         ''' Returns True if the Player player has UNO, that is has only one card left '''
         return len(player.getCurrentHand()) == 1
+
+    def nextPlayerHasUno(self):
+        ''' Returns true if the next player has UNO (to help the AI) '''
+        try:
+            return len(self._playerList[self._currentPlayer-1].getCurrentHand) == 1
+        except:
+            return len(self._playerList[0].getCurrentHand()) == 1
         
     def applySpecial(self,card, color=None):
         ''' Applies the special ability of Card card. '''

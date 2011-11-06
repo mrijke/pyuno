@@ -88,18 +88,22 @@ def start():
             print "AI player %s is thinking..." % current.getName()
             time.sleep(1)
             try:
-                selectedcard = current.determineMove(g.getCurrentCard())
+                selectedcard = current.determineMove(g.getCurrentCard(), g.nextPlayerHasUno())
             except NoMoveFoundException:
                 print "AI draws a card."
                 current.drawCard()
                 try:
-                    selectedcard = current.determineMove(g.getCurrentCard())
+                    selectedcard = current.determineMove(g.getCurrentCard(), g.nextPlayerHasUno())
                 except NoMoveFoundException:
                     print "AI passes"
                     g.playerPasses()
                     passed = True
                     continue
-            g.doMove(current, selectedcard)
+            if selectedcard.isWild():
+                c = current.determineColor() #ask the AI which color it wants
+            else:
+                c = None
+            g.doMove(current, selectedcard, c)
             print "AI player %s played %s" % (current.getName(), str(selectedcard))
         
         if not passed:
@@ -110,8 +114,8 @@ def start():
             elif selectedcard.getData() == "reverse":
                 print "Play order is reversed."
             elif selectedcard.getData() == "wild draw four":
-                print "%s draws two cards and skips his turn." % g.getNextPlayerName()
-            elif selectedcard.getData() == "wild" or selectedcard.getData() == "wild draw four":
+                print "%s draws four cards and skips his turn." % g.getNextPlayerName()
+            if selectedcard.getColor() == "blank":
                 print "The color has been changed to %s" % g.getCurrentCard().getColor()
 
         if g.hasUno(current):
