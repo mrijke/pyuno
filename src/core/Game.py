@@ -77,18 +77,12 @@ class Game(object):
                 self._currentPlayer = 0
             return True
         elif ability == 'reverse':
-
-#            if len(self._playerList) > 2: 
-#                self._playerList = self._playerList[::-1] #reverse the list
-#                self._currentPlayer = abs(self._currentPlayer-len(self._playerList)) #fix order
-#                return True
-#            return False
             self._playerList = self._playerList[::-1] #reverse the list
             if len(self._playerList) > 2: 
                 self._currentPlayer = abs(self._currentPlayer-len(self._playerList)) #fix order
             if self._currentPlayer > len(self._playerList)-1:
                 self._currentPlayer=0
-            return False
+            return len(self._playerList) == 2
         elif ability == 'draw 2':
             try:
                 self._playerList[self._currentPlayer+1].drawCard(2)
