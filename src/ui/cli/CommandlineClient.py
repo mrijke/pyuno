@@ -60,7 +60,7 @@ def start():
                     print "%s draws a card." % current.getName()
                     print 'Your hand:',
                     for card in cards:
-                        print '%s |' % card,
+                        print '(#%d) %s |' % ((cards.index(card)+1),card),
                     print
                     print 'Current card: ' + str(g.getCurrentCard())
                     drew = True
