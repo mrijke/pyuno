@@ -7,15 +7,31 @@ import sys, time
 from core.Game import Game, InvalidMoveException
 from core.AIPlayer import AIPlayer, NoMoveFoundException
 
+def askColor():
+    while 1:
+        color = str(raw_input("Choose a color: "))
+        if color  in ['blue', 'yellow', 'green', 'red']:
+            return color
+
+def askInt(prompt):
+    while 1:
+        try:
+            return int(raw_input(prompt))
+        except KeyboardInterrupt:
+            print
+            sys.exit(0)
+        except:
+            continue
+
 def start():
     print "Welcome to the superawesome pyUNO gaem."
     g = Game()
-    humanplayers = int(raw_input("How many human players are playing? "))
+    humanplayers = askInt("How many human players are playing? ")
     if humanplayers > 0:
         for x in range(humanplayers):
             g.addPlayerToGame(str(raw_input("Name of human player %d? " % (x+1)\
                     )))
-    aiplayers = int(raw_input("How many AI Players are playing? "))
+    aiplayers = askInt("How many AI Players are playing? ")
     if aiplayers > 0:
         for x in range(aiplayers):
             g.addAIPlayerToGame(str(raw_input("Name of AI Player %d? " % (x+1)\
@@ -30,17 +46,14 @@ def start():
         print 'Current card: ' + str(g.getCurrentCard())
         passed = False
         if not isinstance(current, AIPlayer): 
-            print "Your hand: ",
+            print "Your hand: |",
             for card in cards:
-                print '%s |' % card,
+                print '(#%d) %s |' % ((cards.index(card)+1), card),
             print
             notDone = True
             drew = False
             while notDone:
-                try:
-                    selectedcardnumber = int(raw_input("Pick a card number, or 0 to draw a new card/pass.  "))
-                except KeyboardInterrupt:
-                    sys.exit(1)                
+                selectedcardnumber = askInt("Pick a card number, or 0 to draw a new card/pass.  ")
                 
                 if selectedcardnumber == 0 and not drew:
                     current.drawCard()
@@ -63,10 +76,7 @@ def start():
                     try:
                         selectedcard = cards[selectedcardnumber-1]
                         if selectedcard.isWild(): #requires more user input
-                            while 1:
-                                c = str(raw_input("Choose a color: "))
-                                if c in ['blue','yellow','green','red']:
-                                    break
+                            c = askColor()
                             g.doMove(current, selectedcard, c)
                         else:
                             g.doMove(current, selectedcard)
@@ -108,4 +118,3 @@ def start():
             print "%s has UNO! Beware!" % current.getName()
                                     
     print "%s has won this game of UNO! :)" % current.getName()
-                

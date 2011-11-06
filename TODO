@@ -1,3 +1,5 @@
 * AI needs to use the wild* cards in a smart way
 * CommandLineClient should accept entries like 'y1' for card yellow 1
-* Fix exceptions caused by incorrect input
+* Figure out what should happen when the deck is empty
+* Figure out what to do when an action card is dealt as the first card
+  (officially it should apply the action)
