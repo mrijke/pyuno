@@ -6,6 +6,9 @@ Created on Apr 15, 2010
 from Card import Card
 from random import randint
 
+class EmptyDeckException(Exception):
+    pass
+
 class Deck(object):
     '''
     Represents an UNO card deck.
@@ -18,13 +21,14 @@ class Deck(object):
     Four of each are included in the deck.
     '''
    
+    _card_colors = ['red', 'green', 'yellow', 'blue']
+    _special_cards = ['skip', 'draw 2', 'reverse']
+    _nocolor_special_cards = ['wild', 'wild draw four']
+
     def __init__(self):
         '''
         Constructs a deck of cards.
         '''
-        self._card_colors = ['red', 'green', 'yellow', 'blue']
-        self._special_cards = ['skip', 'draw 2', 'reverse']
-        self._nocolor_special_cards = ['wild', 'wild draw four']
 
         self._cards = []
         for color in self._card_colors:
@@ -38,9 +42,18 @@ class Deck(object):
             for x in range(4):
                 self._cards.append(Card('blank', card))
                 
-    def drawCard(self):
+    def drawCard(self, amount=1):
         ''' Returns (draws) the top card '''
-        return self._cards.pop(0)
+        cards = []
+        for x in range(amount):
+            try:
+                cards.append(self._cards.pop(0))
+            except:
+                raise EmptyDeckException
+        if len(cards) == 1:
+            return cards[0]
+        else:
+            return cards
     
     def draw7Cards(self):
         ''' Return (draw) 7 cards. Used for the initial cards when starting a new game. '''

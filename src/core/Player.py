@@ -4,6 +4,7 @@ Created on Jul 19, 2010
 @author: rupert
 '''
 from Hand import Hand
+from Card import Card
 
 class Player(object):
     '''
@@ -11,14 +12,12 @@ class Player(object):
     Can be human, or can be controlled by an AI.
     '''
     
-    def __init__(self, name, deck):
+    def __init__(self, name, initcards):
         '''
         Constructs a new Player
         '''
         self._name = name
         self._hand = Hand()
-        self._deck = deck
-        initcards = self._deck.draw7Cards()
         for card in initcards:
             self._hand.addCard(card)
             
@@ -54,11 +53,13 @@ class Player(object):
         ''' Returns name of player '''
         return self._name
     
-    def drawCard(self, number=1):
-        ''' Draw a card and add it to the player's hand '''
-        for x in range(number):
-            card = self._deck.drawCard()
-            self._hand.addCard(card)
+    def giveCard(self, cards):
+        ''' Add card(s) to the player's hand '''
+        if isinstance(cards, Card):
+            self._hand.addCard(cards)
+        else:
+            for card in cards:
+                self._hand.addCard(card)
         
     def removeFromHand(self, card):
         ''' Remove given card from player's hand '''

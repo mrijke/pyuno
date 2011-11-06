@@ -56,7 +56,7 @@ def start():
                 selectedcardnumber = askInt("Pick a card number, or 0 to draw a new card/pass.  ")
                 
                 if selectedcardnumber == 0 and not drew:
-                    current.drawCard()
+                    g.playerDrawCard(current, 1)
                     print "%s draws a card." % current.getName()
                     print 'Your hand:',
                     for card in cards:
@@ -86,12 +86,12 @@ def start():
                     notDone = False
         else: #AI Player
             print "AI player %s is thinking..." % current.getName()
-            time.sleep(1)
+            time.sleep(.5)
             try:
                 selectedcard = current.determineMove(g.getCurrentCard(), g.nextPlayerHasUno())
             except NoMoveFoundException:
                 print "AI draws a card."
-                current.drawCard()
+                g.playerDrawCard(current, 1)
                 try:
                     selectedcard = current.determineMove(g.getCurrentCard(), g.nextPlayerHasUno())
                 except NoMoveFoundException:

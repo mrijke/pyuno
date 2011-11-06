@@ -3,10 +3,12 @@ Created on Apr 23, 2010
 
 @author: rupert
 '''
-from Deck import Deck
+from Deck import Deck, EmptyDeckException
+from DiscardPile import DiscardPile
 from Card import Card
 from Player import Player
 from AIPlayer import AIPlayer
+from copy import deepcopy
 
 class InvalidMoveException(Exception):
     pass
@@ -21,6 +23,7 @@ class Game(object):
         self._playerList = []
         self._deck = Deck()
         self._deck.shuffle()
+        self._discardPile = DiscardPile()
         self._currentPlayer = 0
         self._currentCard = self._deck.drawCard()
         self._blankCards = {
@@ -35,11 +38,11 @@ class Game(object):
     
     def addPlayerToGame(self, name):
         ''' Add a human player to the game '''
-        self._playerList.append(Player(name, self._deck))
+        self._playerList.append(Player(name, self._deck.draw7Cards()))
         
     def addAIPlayerToGame(self, name):
         ''' Add an AI player to the game '''
-        self._playerList.append(AIPlayer(name, self._deck))
+        self._playerList.append(AIPlayer(name, self._deck.draw7Cards()))
     
     def getCurrentCard(self):
         ''' Returns the current card in play for this game '''
@@ -85,23 +88,34 @@ class Game(object):
             return len(self._playerList) == 2
         elif ability == 'draw 2':
             try:
-                self._playerList[self._currentPlayer+1].drawCard(2)
+                nextplayer = self._playerList[self._currentPlayer+1]
+                self.playerDrawCard(nextplayer, 2)
                 self._currentPlayer+=1
             except:
-                self._playerList[0].drawCard(2)
+                self.playerDrawCard(self._playerList[0], 2)
                 self._currentPlayer = 0
             return True
         elif ability == 'wild' or ability == 'wild draw four':
             self._currentCard = self._blankCards[color]
             if ability == "wild draw four":
                 try:
-                    self._playerList[self._currentPlayer+1].drawCard(4)
+                    nextplayer = self._playerList[self._currentPlayer+1]
+                    self.playerDrawCard(nextplayer, 4)
                     self._currentPlayer+=1
                 except:
-                    self._playerList[0].drawCard(4)
+                    self.playerDrawCard(self._playerList[0], 4)
                     self._currentPlayer=0
             return True
 
+    def playerDrawCard(self, player, amount):
+        try:
+            player.giveCard(self._deck.drawCard(amount))
+        except EmptyDeckException:
+            self._discardPile.shuffle()
+            self._deck = self._discardPile
+            self._discardPile = DiscardPile()
+            print "Deck was empty, shuffled discard pile as new deck."
+            player.giveCard(self._deck.drawCard(amount))
 
     def doMove(self, player, card, color=None):
         ''' 
@@ -114,6 +128,7 @@ class Game(object):
         nextPlayer = True
         if card.isSpecial(): nextPlayer = self.applySpecial(card, color)
         player.removeFromHand(card)
+        self._discardPile.addCard(card)
         if not card.isWild(): self._currentCard = card
         if nextPlayer:
             self._currentPlayer += 1
